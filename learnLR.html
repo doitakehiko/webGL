@@ -1,0 +1,120 @@
+<html>
+<meta charset="utf-8"/>
+<body>
+Left and right learning program.<BR>
+If the point of the cone is in front of the center of the earth, the left is red and the green is right.<BR>
+Reference URL<BR>
+https://liginc.co.jp/317891<BR>
+http://gupuru.hatenablog.jp/entry/2013/12/15/204613
+
+<div id="stage"></div>
+<script src="https://82mou.github.io/threejs/js/three.js"></script>
+<script src="https://82mou.github.io/threejs/js/OrbitControls.js"></script> <!-- 追加 -->
+<script>
+(function() {
+	var scene;
+	var sphereEarth;
+	var camera;
+	var light;
+	var ambient;
+	var gridHelper;
+	var axisHelper;
+	var lightHelper;
+	var renderer;
+	var loader;
+	var width = 640;
+	var height = 330;
+	var controls; // 追加
+
+	// ステージを作る
+	scene = new THREE.Scene();
+
+	// 地球テクスチャーを準備
+	loader = new THREE.TextureLoader();
+	loader.load('https://82mou.github.io/threejs/img/earth.jpg', function(texture) {
+		createEarth(texture);
+		render();
+	});
+
+	// 地球を作る
+	function createEarth(texture) {
+		sphereEarth = new THREE.Mesh(
+			new THREE.SphereGeometry(80, 20, 20), // 形状
+			new THREE.MeshLambertMaterial({ // 材質
+	  		map: texture
+	})
+	);
+	sphereEarth.position.set(0, 0, 0);
+	scene.add(sphereEarth);
+};
+    
+	//円柱左
+	var CylinderL = new THREE.Mesh(                                     
+		new THREE.CylinderGeometry(0,20,80,60),                         
+		new THREE.MeshPhongMaterial({                                      
+			color: 0xFF0000
+	}));
+	CylinderL.position.set(-15, 110, 80);
+	CylinderL.rotation.set(200, 0, 0);
+	//sceneオブジェクトに追加
+	scene.add(CylinderL); 
+
+	//円柱右
+	var CylinderR = new THREE.Mesh(                                     
+		new THREE.CylinderGeometry(0,20,80,60),                         
+		new THREE.MeshPhongMaterial({                                      
+		color: 0x00FF7F
+	}));
+	CylinderR.position.set(15, 110, 80);
+	CylinderR.rotation.set(200, 0, 0);
+	//sceneオブジェクトに追加
+	scene.add(CylinderR); 
+
+
+	// 平方光源を作る
+	light = new THREE.DirectionalLight(0xffffff, 1);
+	light.position.set(100, 130, 80);
+	scene.add(light);
+    
+	　// 環境光源を作る
+	ambient = new THREE.AmbientLight(0x222222);
+	scene.add(ambient);
+    
+	// カメラを作る
+	camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
+	camera.position.set(200, 100, 300);
+	camera.lookAt(scene.position);
+
+	// helper
+	gridHelper = new THREE.GridHelper(200, 20);
+	scene.add(gridHelper);
+	axisHelper = new THREE.AxisHelper(1000);
+	scene.add(axisHelper);
+	lightHelper = new THREE.DirectionalLightHelper(light, 20);
+	scene.add(lightHelper);
+
+
+	// 追加：controls
+	controls = new THREE.OrbitControls(camera);
+    
+	// renderer
+	renderer = new THREE.WebGLRenderer({ antialias: true });
+	renderer.setSize(width, height);
+	renderer.setClearColor(0xefefef);
+	renderer.setPixelRatio(window.devicePixelRatio);
+	document.getElementById('stage').appendChild(renderer.domElement);
+
+	function render() {
+		requestAnimationFrame(render);
+
+		controls.update(); // 追加
+		renderer.render(scene, camera);
+	}
+
+})();
+</script>
+</body>
+</html>
+</script>
+</body>
+</html>
